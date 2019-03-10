@@ -1,0 +1,44 @@
+// Add This Code For Function.php
+
+
+function punching_team_admin_menu() {
+	global $team_page;
+	global $wpdb;
+	add_menu_page( __( 'Punching', 'sports-bench' ), __( 'Punching', 'sports-bench' ), 'edit_posts', 'punching_data', 'punching_teams_form_page_handler', 'dashicons-groups', 6 ) ;
+}
+add_action( 'admin_menu', 'punching_team_admin_menu' );
+
+function punching_teams_form_page_handler() {
+	global $wpdb;
+	$user_violations = $wpdb->get_results("
+			SELECT punching.punching_id,punching.start_time,punching.total_time,punching.start_date,punching.total_time,wp_users.user_login	FROM punching ,wp_users	WHERE  punching.user_id =wp_users.ID;
+    ");
+	?>
+    <table id="users_table" class="ui celled table" style="width:100%">
+        <thead>
+            <tr>
+                <th>Punching Id</th> 
+                <th>User Name</th>
+                <th>Start Time</th>
+                <th>Total Time</th>
+                <th>Start Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                foreach ($user_violations as $uv){
+                    ?>
+                    <tr>
+                        <td><?=$uv->punching_id ?></td>
+                        <td><?=$uv->user_login ?></td>
+                        <td><?=$uv->start_time ?></td>
+                        <td><?=$uv->total_time	 ?></td>
+                        <td><?=$uv->start_date ?></td>
+                    </tr>
+                    <?php
+                }
+            ?>
+        </tbody>
+    </table>
+	<?php
+}
